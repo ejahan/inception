@@ -1,0 +1,736 @@
+https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-debian-10
+https://www.youtube.com/playlist\?list\=PLn6POgpklwWq0iz59-px2z-qjDdZKEvWd
+https://www.youtube.com/playlist\?list\=PLn6POgpklwWqaC1pdx02SrrgOaL2ZL7G0
+https://www.digitalocean.com/community/tutorials/how-to-install-mariadb-on-debian-11
+
+++
+https://howto.wared.fr/installation-wordpress-ubuntu-nginx/
+https://medium.com/swlh/wordpress-deployment-with-nginx-php-fpm-and-mariadb-using-docker-compose-55f59e5c1a
+
+wordpress:
+https://www.inmotionhosting.com/support/edu/wordpress/install-wordpress-debian-10/
+php-fpm:
+https://www.formatux.fr/formatux-services/module-121-phpfpm/index.html
+
+
+INCEPTION
+https://medium.com/freestoneinfotech/simplifying-docker-compose-operations-using-makefile-26d451456d63
+https://openclassrooms.com/fr/courses/2035766-optimisez-votre-deploiement-en-creant-des-conteneurs-avec-docker/6211677-creez-un-fichier-docker-compose-pour-orchestrer-vos-conteneurs
+https://www.data-transitionnumerique.com/docker-compose/
+
+docker compose / docker network
+
+volumes:
+https://devopssec.fr/article/fonctionnement-manipulation-volumes-docker
+
+
+docker-compose.ylm / Makefile
+https://medium.com/freestoneinfotech/simplifying-docker-compose-operations-using-makefile-26d451456d63
+https://openclassrooms.com/fr/courses/2035766-optimisez-votre-deploiement-en-creant-des-conteneurs-avec-docker/6211677-creez-un-fichier-docker-compose-pour-orchestrer-vos-conteneurs
+https://gist.github.com/mpneuried/0594963ad38e68917ef189b4e6a269db
+https://kudlay.pro/docker-compose-makefile/
+
+network
+https://medium.com/@caysever/docker-compose-network-b86e424fad82
+https://runnable.com/docker/docker-compose-networking
+https://docs.docker.com/compose/networking/
+
+
+mariadb:
+https://debian-facile.org/utilisateurs:hypathie:tutos:installer_sql-mariadb
+https://www.digitalocean.com/community/tutorials/how-to-install-mariadb-on-debian-11
+https://computingforgeeks.com/how-to-install-mariadb-on-debian/
+https://linuxiac.com/how-to-install-mariadb-on-debian/
+https://www.malekal.com/installer-mysql-mariadb-sur-debian-10/
+https://gist.github.com/Mins/4602864#gistcomment-1299116
+https://www.christophe-casalegno.com/installation-dun-serveur-mariadb-ou-mysql-en-une-ligne-de-commande-sous-linux-debian/
+https://stackoverflow.com/questions/24563762/running-mysql-in-the-foreground-in-centos
+commandes:
+https://www.hostwinds.fr/tutorials/how-to-use-mysql-mariadb-from-command-line
+
+
+
+ejahan.42.fr:
+https://askubuntu.com/questions/298540/how-do-i-set-up-a-localhost-website
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+avant de commencer:
+sudo chmod 666 /var/run/docker.sock
+sudo service nginx stop
+sudo service mysql stop (sinon -> port 3306 deja utilise)
+
+
+exit with code 0
+		-> tty:true + stdin_open: true
+https://kossy0701.medium.com/what-is-tty-true-in-docker-compose-yml-47a72891aee2
+https://betterprogramming.pub/understanding-docker-container-exit-codes-5ee79a1d58f6
+
+ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/var/run/mysqld/mysqld.sock' (2)
+		-> service mariadb start
+https://forum.ubuntu-fr.org/viewtopic.php?id=11558
+
+listen tcp4 0.0.0.0:3306: bind: address already in use -> sudo service mysql stop
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+		-> apt-get mariadb-client ou mariadb start je sais plus
+
+
+
+_______________
+image/conteneur
+==================================================================================================================================
+Concept Docker			Analogie			Mode						Statut							Consommation de ressources
+----------------------------------------------------------------------------------------------------------------------------------
+Image Docker			DVD					Inerte						« Lecture-seule » / immuable	Fixe
+Conteneur Docker		« en lecture »		Film en cours de lecture	Change au fil du temps			Varie selon l’usage
+
+
+
+________________
+commandes docker
+======================================================================================================================
+docker ps											->	liste les conteneurs
+docker ps -a										->	liste tous les conteneurs (ceux a l'arret aussi)
+docker run -di --name <name> <image>				->	lance un conteneur <name> avec l'image <image>
+docker exec -ti <name> sh							->	rentrer dans le conteneur <name> avec un bash (=sh)
+docker run stop <name>								->	stop un conteneur <name>
+docker run -tid -p <port> --name <name> <image>		->	lance un conteneur <name> + exposition de port (rediriger un port du conteneur vers un port de notre machine locale)
+docker inspect <name>								->	acceder aux proprietes de notre conteneur <name>
+docker start <name>									->	relance le conteneur
+docker rm -f <name>									->	supprime le conteneur
+docker run -tid -p <port:port> -v /home/.../:/usr/share/nginx/html/ --name <name> <image>	->	volumes (garde les donnees meme apres suppression du conteneur)
+docker build										->	creer une image
+
+_____________
+docker volume
+======================================================================================================================
+docker volume COMMAND
+---------------------
+docker volume create	->	creer un volume
+docker volume inspect	->	affiche les informations detaillees de un ou plusieurs volumes
+docker volume ls		->	liste les volumes
+docker volume prune		->	efface tous les local volumes inutilises
+docker volume rm		->	efface un ou plusieurs volumes
+
+______________
+docker network
+======================================================================================================================
+docker network COMMAND
+----------------------
+docker network connect		->	Connect a container to a network
+docker network create		->	Create a network
+docker network disconnect	->	Disconnect a container from a network
+docker network inspect		->	Display detailed information on one or more networks
+docker network ls			->	List networks
+docker network prune		->	Remove all unused networks
+docker network rm			->	Remove one or more networks
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+wordpress    | Restarting PHP 7.3 FastCGI Process Manager: php-fpm7.3 failed!
+wordpress    | index.nginx-debian.html
+wordpress    | wordpress
+wordpress    | Restarting PHP 7.3 FastCGI Process Manager: php-fpm7.3 failed!
+wordpress    | index.nginx-debian.html
+wordpress    | wordpress
+wordpress    | Restarting PHP 7.3 FastCGI Process Manager: php-fpm7.3 failed!
+wordpress exited with code 0
+
+
+
+
+
+
+
+
+wordpress    | chown: cannot access '/var/www/html/wordpress': No such file or directory
+wordpress    | rm: cannot remove '/var/www/html/wordpress/readme.html': No such file or directory
+wordpress    | index.nginx-debian.html
+wordpress    | Restarting PHP 7.3 FastCGI Process Manager: php-fpm7.3 failed!
+
+
+
+
+wordpress exited with code 0
+wordpress    | chown: cannot access '/var/www/html/wordpress': No such file or directory
+wordpress    | rm: cannot remove '/var/www/html/wordpress/readme.html': No such file or directory
+wordpress    | index.nginx-debian.html
+wordpress    | Restarting PHP 7.3 FastCGI Process Manager: php-fpm7.3 failed!
+wordpress    | rm: cannot remove '/var/www/html/wordpress/readme.html': Not a directory
+wordpress    | index.nginx-debian.html
+wordpress    | wordpress
+wordpress    | Restarting PHP 7.3 FastCGI Process Manager: php-fpm7.3 failed!
+
+
+
+
+wordpress    | wordpress/wp-comments-post.php
+wordpress    | /root/test.sh: line 90: sudo: command not found
+wordpress    | deb https://packages.sury.org/php/ buster main
+wordpress    | Get:1 https://packages.sury.org/php buster InRelease [6837 B]
+wordpress    | Hit:2 http://deb.debian.org/debian buster InRelease
+wordpress    | Hit:3 http://deb.debian.org/debian-security buster/updates InRelease
+wordpress    | Hit:4 http://deb.debian.org/debian buster-updates InRelease
+wordpress    | Err:1 https://packages.sury.org/php buster InRelease
+wordpress    |   The following signatures couldn't be verified because the public key is not available: NO_PUBKEY B188E2B695BD4743
+wordpress    | Reading package lists...
+wordpress    | W: GPG error: https://packages.sury.org/php buster InRelease
+
+
+
+ Hit:1 http://deb.debian.org/debian buster InRelease
+wordpress    | Get:2 https://packages.sury.org/php buster InRelease [6837 B]
+wordpress    | Hit:3 http://deb.debian.org/debian-security buster/updates InRelease
+wordpress    | Hit:4 http://deb.debian.org/debian buster-updates InRelease
+wordpress    | Err:2 https://packages.sury.org/php buster InRelease
+wordpress    |   The following signatures couldn't be verified because the public key is not available: NO_PUBKEY B188E2B695BD4743
+wordpress    | Reading package lists...
+wordpress    | W: GPG error: https://packages.sury.org/php buster InRelease: The following signatures couldn't be verified because the public key is not available: NO_PUBKEY B188E2B695BD4743
+wordpress    | E: The repository 'https://packages.sury.org/php buster InRelease' is not signed.
+wordpress    | Reading package lists...
+wordpress    | Building dependency tree...
+wordpress    | Reading state information...
+wordpress    | The following additional packages will be installed:
+wordpress    |   libprocps7 lsb-base php7.3 php7.3-fpm procps
+wordpress    | Suggested packages:
+wordpress    |   php-pear
+wordpress    | The following NEW packages will be installed:
+wordpress    |   libprocps7 lsb-base php php-fpm php7.3 php7.3-fpm procps
+wordpress    | 0 upgraded, 7 newly installed, 0 to remove and 0 not upgraded.
+wordpress    | Need to get 1837 kB of archives.
+wordpress    | After this operation, 5901 kB of additional disk space will be used.
+wordpress    | Do you want to continue? [Y/n] Abort.
+wordpress    | php7.3-fpm: unrecognized service
+
+
+
+
+
+
+
+
+hp
+wordpress    | wordpress/wp-trackback.php
+wordpress    | wordpress/wp-comments-post.php
+wordpress    | E: gnupg, gnupg2 and gnupg1 do not seem to be installed, but one of them is required for this operation
+wordpress    | deb https://packages.sury.org/php/ buster main
+wordpress    | Hit:1 http://deb.debian.org/debian buster InRelease
+wordpress    | Hit:2 http://deb.debian.org/debian-security buster/updates InRelease
+wordpress    | Hit:3 http://deb.debian.org/debian buster-updates InRelease
+wordpress    | Get:4 https://packages.sury.org/php buster InRelease [6837 B]
+wordpress    | Err:4 https://packages.sury.org/php buster InRelease
+wordpress    |   The following signatures couldn't be verified because the public key is not available: NO_PUBKEY B188E2B695BD4743
+wordpress    | Reading package lists...
+wordpress    | W: GPG error: https://packages.sury.org/php buster InRelease: The following signatures couldn't be verified because the public key is not available: NO_PUBKEY B188E2B695BD4743
+wordpress    | E: The repository 'https://packages.sury.org/php buster InRelease' is not signed.
+wordpress    | Reading package lists...
+wordpress    | Building dependency tree...
+wordpress    | Reading state information...
+wordpress    | php is already the newest version (2:7.3+69).
+wordpress    | php-fpm is already the newest version (2:7.3+69).
+wordpress    | 0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+
+
+
+
+
+
+
+
+
+
+
+
+
+wordpress    | E: gnupg, gnupg2 and gnupg1 do not seem to be installed, but one of them is required for this operation
+wordpress    | deb https://packages.sury.org/php/ buster main
+wordpress    | Hit:1 http://deb.debian.org/debian buster InRelease
+wordpress    | Hit:2 http://deb.debian.org/debian-security buster/updates InRelease
+wordpress    | Hit:3 http://deb.debian.org/debian buster-updates InRelease
+wordpress    | Get:4 https://packages.sury.org/php buster InRelease [6837 B]
+wordpress    | Err:4 https://packages.sury.org/php buster InRelease
+wordpress    |   The following signatures couldn't be verified because the public key is not available: NO_PUBKEY B188E2B695BD4743
+wordpress    | Reading package lists...
+wordpress    | W: GPG error: https://packages.sury.org/php buster InRelease: The following signatures couldn't be verified because the public key is not available: NO_PUBKEY B188E2B695BD4743
+wordpress    | E: The repository 'https://packages.sury.org/php buster InRelease' is not signed.
+wordpress    | Reading package lists...
+wordpress    | Building dependency tree...
+wordpress    | Reading state information...
+wordpress    | php is already the newest version (2:7.3+69).
+wordpress    | php-fpm is already the newest version (2:7.3+69).
+wordpress    | 0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+www.conf
+[www]
+user = nginx
+group = nginx
+# listen = /var/run/php5-fpm.sock
+# listen.owner = www-data
+# listen.group = www-data
+listen = 9000
+
+pm = dynamic
+pm.max_children = 5
+pm.start_servers = 2
+pm.min_spare_servers = 1
+pm.max_spare_servers = 3
+
+chdir = /
+
+
+
+
+
+
+
+
+
+
+# [www]
+# user = nginx
+# group = nginx
+# listen = 9000
+
+# # listen = /var/run/php5-fpm.sock
+# # listen.owner = www-data
+# # listen.group = www-data
+
+# pm = dynamic
+# pm.max_children = 5
+# pm.start_servers = 2
+# pm.min_spare_servers = 1
+# pm.max_spare_servers = 3
+
+# chdir = /
+
+
+
+
+
+
+
+
+# max_execution_time = 180
+# max_input_time = 360
+# max_input_vars = 5000
+# memory_limit = 256M
+# cgi.fix_pathinfo = 0
+# file_uploads = On
+# post_max_size = 192M
+# upload_max_filesize = 96M
+# allow_url_fopen = On
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ERROR: unable to bind listening socket for address '/run/php/php7.3-fpm.sock': No such file or directory (2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+mariadb      | 230108 00:26:41 mysqld_safe Starting mariadbd daemon with databases from /var/lib/mysql
+wordpress    | Downloading WordPress 6.1.1 (en_US)...
+wordpress    | md5 hash verified: 38a0a4f7b7ec8429b2fe96de6b5d6572
+wordpress    | Success: WordPress downloaded.
+wordpress    | Error: Error establishing a database connection. This either means that the username and 
+				password information in your `wp-config.php` file is incorrect or that contact with the 
+				database server at `localhost:3306` could not be established. This could mean your host’s 
+				database server is down.
+
+
+
+
+
+WORDPRESS_DB_PASSWORD=
+WORDPRESS_DB_USER=test
+MYSQL_ROOT_PASSWORD=root_pw
+MYSQL_DATABASE=test
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<?php
+/**
+ * The base configuration for WordPress
+ *
+ * The wp-config.php creation script uses this file during the installation.
+ * You don't have to use the web site, you can copy this file to "wp-config.php"
+ * and fill in the values.
+ *
+ * This file contains the following configurations:
+ *
+ * * Database settings
+ * * Secret keys
+ * * Database table prefix
+ * * ABSPATH
+ *
+ * @link https://wordpress.org/support/article/editing-wp-config-php/
+ *
+ * @package WordPress
+ */
+
+// ** Database settings - You can get this info from your web host ** //
+/** The name of the database for WordPress */
+define( 'DB_NAME', '$MYSQL_DATABASE' );
+
+/** Database username */
+define( 'DB_USER', '$WORDPRESS_DB_USER' );
+
+/** Database password */
+define( 'DB_PASSWORD', '$WORDPRESS_DB_PASSWORD' );
+
+/** Database hostname */
+define( 'DB_HOST', 'localhost' );
+
+/** Database charset to use in creating database tables. */
+define( 'DB_CHARSET', 'utf8' );
+
+/** The database collate type. Don't change this if in doubt. */
+define( 'DB_COLLATE', '' );
+
+/**#@+
+ * Authentication unique keys and salts.
+ *
+ * Change these to different unique phrases! You can generate these using
+ * the {@link https://api.wordpress.org/secret-key/1.1/salt/ WordPress.org secret-key service}.
+ *
+ * You can change these at any point in time to invalidate all existing cookies.
+ * This will force all users to have to log in again.
+ *
+ * @since 2.6.0
+ */
+define( 'AUTH_KEY',         'put your unique phrase here' );
+define( 'SECURE_AUTH_KEY',  'put your unique phrase here' );
+define( 'LOGGED_IN_KEY',    'put your unique phrase here' );
+define( 'NONCE_KEY',        'put your unique phrase here' );
+define( 'AUTH_SALT',        'put your unique phrase here' );
+define( 'SECURE_AUTH_SALT', 'put your unique phrase here' );
+define( 'LOGGED_IN_SALT',   'put your unique phrase here' );
+define( 'NONCE_SALT',       'put your unique phrase here' );
+
+/**#@-*/
+
+/**
+ * WordPress database table prefix.
+ *
+ * You can have multiple installations in one database if you give each
+ * a unique prefix. Only numbers, letters, and underscores please!
+ */
+$table_prefix = 'wp_';
+
+/**
+ * For developers: WordPress debugging mode.
+ *
+ * Change this to true to enable the display of notices during development.
+ * It is strongly recommended that plugin and theme developers use WP_DEBUG
+ * in their development environments.
+ *
+ * For information on other constants that can be used for debugging,
+ * visit the documentation.
+ *
+ * @link https://wordpress.org/support/article/debugging-in-wordpress/
+ */
+define( 'WP_DEBUG', false );
+
+/* Add any custom values between this line and the "stop editing" line. */
+
+
+
+/* That's all, stop editing! Happy publishing. */
+
+/** Absolute path to the WordPress directory. */
+if ( ! defined( 'ABSPATH' ) ) {
+	define( 'ABSPATH', __DIR__ . '/' );
+}
+
+/** Sets up WordPress vars and included files. */
+require_once ABSPATH . 'wp-settings.php';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[www]
+user = www-data
+group = www-data
+
+listen = wordpress:9000
+listen.owner = www-data
+listen.group = www-data
+pm = dynamic
+pm.max_children = 5
+pm.start_servers = 2
+pm.min_spare_servers = 1
+pm.max_spare_servers = 3
+clear_env = no
+
+
+
+
+
+
+[www]
+user = www-data
+group = www-data
+listen = 9000
+
+listen.owner = www-data
+listen.group = www-data
+
+pm = dynamic
+pm.max_children = 5
+pm.start_servers = 2
+pm.min_spare_servers = 1
+pm.max_spare_servers = 3
+
+chdir = /
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+reste a faire:
+
+changer localhost -> ejahan.42.fr dans nginx?
+check mot de passe obligatoire pour mariadb
+Makefile
+
