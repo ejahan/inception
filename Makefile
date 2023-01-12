@@ -10,19 +10,17 @@
 #                                                                              #
 # **************************************************************************** #
 
-# build:
-# 		cd ./srcs && docker-compose build
+all:	up
 
 up:
-		sudo mkdir /home/ejahan/data/WordPress
-		sudo mkdir /home/ejahan/data/DB
-		cd ./srcs && docker-compose up -d
+		sudo mkdir -p /home/ejahan/data/WordPress
+		sudo mkdir -p /home/ejahan/data/DB
+		cd ./srcs && docker-compose up
 
 start:
 		cd ./srcs && docker-compose start
 
 down:
-		sudo rm -rf /home/ejahan/data/*
 		cd ./srcs && docker-compose down
 
 stop:
@@ -34,4 +32,11 @@ ps:
 images:
 		cd ./srcs && docker images
 
-.PHONY: build up start down stop ps
+clean:
+		sudo rm -rf /home/ejahan
+		sudo rm -rf /home/ejahan
+
+fclean:	down clean
+		docker rmi -f $(shell docker images -qa)
+
+.PHONY: all up start down stop ps images clean fclean
